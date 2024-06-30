@@ -32,7 +32,3 @@ class TestLogin:
         assert response.json()['message'] == data.response_login_user_with_incorrect_data
 
         helpers.delete_user_by_token(token)
-
-
-
-

@@ -26,7 +26,6 @@ def generate_random_login():
 @allure.step('Удаляем пользователя по его токену')
 def delete_user_by_token(token):
     response = requests.delete(data.GET_CHANGE_USER_INFO, headers={'Authorization': token})
-    print(response.json()['message'])
 
 
 @allure.step('Создаем нового пользователя и получаем его логин и пароль')
