@@ -13,9 +13,9 @@ class TestRegister:
         payload = helpers.generate_random_user_data()
         payload_json = json.dumps(payload)
 
-        response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.headers_json)
+        response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.HEADERS_JSON)
 
-        assert response.status_code == 200
+        assert response.status_code == data.STATUS_200
         assert response.json()['success'] == True
 
         helpers.delete_user_by_token(response.json()['accessToken'])
@@ -25,11 +25,11 @@ class TestRegister:
         payload = helpers.generate_random_user_data()
         payload_json = json.dumps(payload)
 
-        response1 = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.headers_json)
-        response2 = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.headers_json)
+        response1 = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.HEADERS_JSON)
+        response2 = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.HEADERS_JSON)
 
-        assert response2.status_code == 403
-        assert response2.json()['message'] == data.response_create_user_used_login
+        assert response2.status_code == data.STATUS_403
+        assert response2.json()['message'] == data.RESPONSE_CREATE_USER_USED_LOGIN
 
         helpers.delete_user_by_token(response1.json()['accessToken'])
 
@@ -40,7 +40,7 @@ class TestRegister:
         payload[field] = ''
         payload_json = json.dumps(payload)
 
-        response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.headers_json)
+        response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload_json, headers=data.HEADERS_JSON)
 
-        assert response.status_code == 403
-        assert response.json()['message'] == data.response_create_user_with_empty_field
+        assert response.status_code == data.STATUS_403
+        assert response.json()['message'] == data.RESPONSE_CREATE_USER_WITH_EMPTY_FIELD

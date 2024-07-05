@@ -10,10 +10,10 @@ class TestGetOrders:
     def test_get_order_with_authorization(self):
         token = helpers.register_new_user_and_return_token()
         order_id = helpers.create_order(token)
+        headers_json = helpers.generate_headers_with_token(token)
 
-        response = requests.get(data.GET_ORDER_BY_USER, headers={'Authorization': token, "Content-type": "application"
-                                                                                                         "/json"})
-        assert response.status_code == 200
+        response = requests.get(data.GET_ORDER_BY_USER, headers=headers_json)
+        assert response.status_code == data.STATUS_200
         assert response.json()["orders"][0]["_id"] == order_id
 
     # Эти тесты не проходят из-за ошибки в API
@@ -24,9 +24,9 @@ class TestGetOrders:
         refresh_token = response_registration.json()['refreshToken']
         token = response_registration.json()['accessToken']
         helpers.create_order(token)
+        headers_json = helpers.generate_headers_with_token(token)
         helpers.logout_user_by_token(refresh_token)
 
-        response = requests.get(data.GET_ORDER_BY_USER, headers={'Authorization': token, "Content-type": "application"
-                                                                                                         "/json"})
-        assert response.status_code == 401
+        response = requests.get(data.GET_ORDER_BY_USER, headers=headers_json)
+        assert response.status_code == data.STATUS_401
         assert response.json()["orders"] is None

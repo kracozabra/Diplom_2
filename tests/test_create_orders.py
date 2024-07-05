@@ -12,11 +12,11 @@ class TestCreateOrders:
         token = helpers.register_new_user_and_return_token()
         payload = {"ingredients": helpers.get_random_ingredients(5)}
         payload_json = json.dumps(payload)
+        headers_json = helpers.generate_headers_with_token(token)
 
-        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json,
-                                 headers={'Authorization': token, "Content-type": "application/json"})
+        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json, headers=headers_json)
 
-        assert response.status_code == 200
+        assert response.status_code == data.STATUS_200
         assert response.json()["success"] == True
 
 
@@ -30,11 +30,11 @@ class TestCreateOrders:
         helpers.logout_user_by_token(refresh_token)
         payload = {"ingredients": helpers.get_random_ingredients(5)}
         payload_json = json.dumps(payload)
+        headers_json = helpers.generate_headers_with_token(token)
 
-        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json,
-                                 headers={'Authorization': token, "Content-type": "application/json"})
+        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json, headers=headers_json)
 
-        assert response.status_code == 401
+        assert response.status_code == data.STATUS_401
         assert response.json()["success"] != True
 
     @allure.title('Проверка создания заказа без ингредиентов')
@@ -42,21 +42,21 @@ class TestCreateOrders:
         token = helpers.register_new_user_and_return_token()
         payload = {"ingredients": []}
         payload_json = json.dumps(payload)
+        headers_json = helpers.generate_headers_with_token(token)
 
-        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json,
-                                 headers={'Authorization': token, "Content-type": "application/json"})
+        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json, headers=headers_json)
 
-        assert response.status_code == 400
-        assert response.json()["message"] == data.response_create_order_without_ingredients
+        assert response.status_code == data.STATUS_400
+        assert response.json()["message"] == data.RESPONSE_CREATE_ORDER_WITHOUT_INGREDIENTS
 
     @allure.title('Проверка создания заказа с некорректными значениями ингредиентов')
     def test_create_order_with_incorrect_ingredients(self):
         token = helpers.register_new_user_and_return_token()
-        payload = {"ingredients": ["60d3b41abdacab0026a733c6", "609646e4dc916e00276b2870"]}
+        payload = data.INCORRECT_INGREDIENTS_PAYLOAD
         payload_json = json.dumps(payload)
+        headers_json = helpers.generate_headers_with_token(token)
 
-        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json,
-                                 headers={'Authorization': token, "Content-type": "application/json"})
+        response = requests.post(data.CREATE_ORDER_ENDPOINT, data=payload_json, headers=headers_json)
 
-        assert response.status_code == 400
-        assert response.json()["message"] == data.response_create_order_with_incorrect_ingredients
+        assert response.status_code == data.STATUS_400
+        assert response.json()["message"] == data.RESPONSE_CREATE_ORDER_WITH_INCORRECT_INGREDIENTS

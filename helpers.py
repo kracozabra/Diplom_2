@@ -23,9 +23,13 @@ def generate_random_login():
     return fake.user_name()
 
 
-@allure.step('Удаляем пользователя по его токену')
-def delete_user_by_token(token):
-    response = requests.delete(data.GET_CHANGE_USER_INFO, headers={'Authorization': token})
+@allure.step('Генерируем headers с авторизацией')
+def generate_headers_with_token(token):
+    headers_with_token = {
+        "Authorization": token,
+        "Content-type": "application/json"
+    }
+    return headers_with_token
 
 
 @allure.step('Создаем нового пользователя и получаем его логин и пароль')
@@ -62,7 +66,12 @@ def register_new_user_and_return_response():
 def logout_user_by_token(refresh_token):
     payload = {"token": refresh_token}
     payload_json = json.dumps(payload)
-    requests.post(data.LOGOUT_USER_ENDPOINT, data=payload_json, headers=data.headers_json)
+    requests.post(data.LOGOUT_USER_ENDPOINT, data=payload_json, headers=data.HEADERS_JSON)
+
+
+@allure.step('Удаляем пользователя по его токену')
+def delete_user_by_token(token):
+    response = requests.delete(data.GET_CHANGE_USER_INFO, headers={'Authorization': token})
 
 
 @allure.step('Создаем список существующих ингредиентов')
