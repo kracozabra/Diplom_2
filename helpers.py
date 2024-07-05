@@ -32,36 +32,6 @@ def generate_headers_with_token(token):
     return headers_with_token
 
 
-@allure.step('Создаем нового пользователя и получаем его логин и пароль')
-def register_new_user_and_return_login_password():
-    payload = generate_random_user_data()
-    user_login_data = {}
-    response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload)
-    if response.status_code == 200:
-        user_login_data = {
-            "email": payload['email'],
-            "password": payload['password']
-        }
-    return user_login_data
-
-
-@allure.step('Создаем нового пользователя и получаем его токен')
-def register_new_user_and_return_token():
-    payload = generate_random_user_data()
-    response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload)
-    if response.status_code == 200:
-        token = response.json()['accessToken']
-    return token
-
-
-@allure.step('Создаем нового пользователя и получаем ответ полностью')
-def register_new_user_and_return_response():
-    payload = generate_random_user_data()
-    response = requests.post(data.REGISTER_USER_ENDPOINT, data=payload)
-    if response.status_code == 200:
-        return response
-
-
 @allure.step('Разлогиниваем пользователя')
 def logout_user_by_token(refresh_token):
     payload = {"token": refresh_token}

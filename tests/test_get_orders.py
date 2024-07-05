@@ -7,8 +7,8 @@ import helpers
 class TestGetOrders:
 
     @allure.title('Проверка получения заказов авторизованного пользователя')
-    def test_get_order_with_authorization(self):
-        token = helpers.register_new_user_and_return_token()
+    def test_get_order_with_authorization(self, register_return_token_delete_user):
+        token = register_return_token_delete_user
         order_id = helpers.create_order(token)
         headers_json = helpers.generate_headers_with_token(token)
 
@@ -19,8 +19,8 @@ class TestGetOrders:
     # Эти тесты не проходят из-за ошибки в API
     # После успешного запроса на разавторизацию токен продолжает работать
     @allure.title('Проверка получения заказов неавторизованного пользователя')
-    def test_get_order_without_authorization(self):
-        response_registration = helpers.register_new_user_and_return_response()
+    def test_get_order_without_authorization(self, register_return_response_delete_user):
+        response_registration = register_return_response_delete_user
         refresh_token = response_registration.json()['refreshToken']
         token = response_registration.json()['accessToken']
         helpers.create_order(token)
